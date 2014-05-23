@@ -1,0 +1,16 @@
+block/                 app/code/community/MVentory/TradeMe/Block/
+helper/                app/code/community/MVentory/TradeMe/Helper/
+model/                 app/code/community/MVentory/TradeMe/Model/
+controller/            app/code/community/MVentory/TradeMe/controllers
+etc/                   app/code/community/MVentory/TradeMe/etc/
+setup/                 app/code/community/MVentory/TradeMe/sql/trademe_setup
+
+module.xml             app/etc/modules/MVentory_TradeMe.xml
+
+adminhtml/trademe.xml  app/design/adminhtml/default/default/layout/trademe.xml
+adminhtml/template     app/design/adminhtml/default/default/template/trademe
+adminhtml/styles.css   skin/adminhtml/default/default/trademe/css/styles.css
+
+email/                 app/locale/en_US/template/email/trademe/
+
+js/                    js/trademe/
