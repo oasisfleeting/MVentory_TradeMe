@@ -22,7 +22,7 @@
  * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_TradeMe_Model_Account extends MVentory_Tm_Model_Tm
+class MVentory_TradeMe_Model_Account
 {
   protected $_accountId = null;
   protected $_website = null;
@@ -33,15 +33,13 @@ class MVentory_TradeMe_Model_Account extends MVentory_Tm_Model_Tm
     $this->_accountId = $accountId;
     $this->_website = $website;
 
-    $helper = Mage::helper('mventory_tm/tm');
+    $helper = Mage::helper('trademe');
 
-    $host = $helper->getConfig(MVentory_TradeMe_Model_Config::SANDBOX, $website)
-              ? 'tmsandbox'
-                : 'trademe';
+    $siteUrl = 'https://secure.'
+               . ($helper->isSandboxMode($website) ? 'tmsandbox' : 'trademe')
+               . '.co.nz/Oauth/';
 
-    $siteUrl = 'https://secure.' . $host . '.co.nz/Oauth/';
-
-    $accounts = Mage::helper('trademe')->getAccounts($website);
+    $accounts = $helper->getAccounts($website);
     $account = $accounts[$accountId];
 
     $route = 'trademe/account/authorise';
