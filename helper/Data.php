@@ -99,16 +99,15 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return string URL to the listing
    */
   public function getListingUrl ($product) {
+    if (!$id = $product->getData('tm_current_listing_id'))
+      return;
+
     $website = Mage::helper('mventory_tm/product')->getWebsite($product);
 
-    $domain = $this->isSandboxMode($website)
-                ? 'tmsandbox'
-                  : 'trademe';
-
     return 'http://www.'
-           . $domain
+           . ($this->isSandboxMode($website) ? 'tmsandbox' : 'trademe')
            . '.co.nz/Browse/Listing.aspx?id='
-           . $product->getTmCurrentListingId();
+           . $id;
   }
 
   /**
