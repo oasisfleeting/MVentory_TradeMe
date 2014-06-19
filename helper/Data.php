@@ -639,10 +639,17 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     if ($params['errors']) {
-      $msg = 'File has not been imported. See the following list of errors: %s';
-      $msg = $this->__($msg, implode(" \n", $params['errors']));
+      $newLine = '<br />&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;';
+      $isSingle = count($params['errors']) == 1;
 
-      Mage::throwException($msg);
+      $error = $this->__($isSingle ? 'Error' : 'Errors') . ':';
+      $error .= $isSingle
+                  ? ' ' . $params['errors'][0]
+                    : $newLine . implode($newLine, $params['errors']);
+
+      Mage::throwException(
+        $this->__('File has not been imported') . '<br />' . $error
+      );
     }
   }
 
