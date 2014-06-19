@@ -40,7 +40,7 @@ class MVentory_TradeMe_Block_Options
 
     $this->_exportPageSize = 10000;
 
-    $this->_helper = Mage::helper('mventory_tm/tm');
+    $this->_helper = Mage::helper('trademe');
 
     $this->_options = array(
       'account_name' => 'Account',
