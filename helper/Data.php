@@ -616,7 +616,10 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
 
       $io->streamClose();
 
-      $this->_saveImportedOptions($data, $website);
+      if ($data)
+        $this->_saveImportedOptions($data, $website);
+      else
+        $params['errors'][] = $this->__('No options in the file');
 
     } catch (Mage_Core_Exception $e) {
       $io->streamClose();
