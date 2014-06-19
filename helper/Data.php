@@ -630,12 +630,9 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
 
       Mage::logException($e);
 
-      $msg = $this->__('An error occurred while import TradeMe options.');
-
-      if ($params['errors'])
-        $msg .= " \n" . implode(" \n", $params['errors']);
-
-      Mage::throwException($msg);
+      $params['errors'][] = $this->__(
+        'An error occurred while processing file. See logs for more info'
+      );
     }
 
     if ($params['errors']) {
