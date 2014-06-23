@@ -156,6 +156,24 @@ $attrs = array(
     //Fields from Mage_Catalog_Model_Resource_Setup
     'visible' => true,
     'is_configurable' => false
+  ),
+
+  'tm_condition' => array(
+    //Fields from Mage_Eav_Model_Entity_Setup
+    'type' => 'int',
+    'input' => 'select',
+    'label' => 'Condition',
+    'source' => 'eav/entity_attribute_source_table',
+    'required' => false,
+    'user_defined' => true,
+    'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
+
+    //Fields from Mage_Catalog_Model_Resource_Setup
+    'filterable' => true,
+    'visible_on_front' => true,
+    'is_html_allowed_on_front' => true,
+
+    'option' => array('values' => array('New', 'Near New', 'Used'))
   )
 );
 

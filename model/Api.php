@@ -1115,7 +1115,7 @@ class MVentory_TradeMe_Model_Api {
   }
 
   protected function _getIsBrandNew ($product) {
-    return ($value = $product->getData('mv_condition_')) === null
+    return ($value = $product->getData('tm_condition')) === null
            || in_array(
                 $value,
                 explode(

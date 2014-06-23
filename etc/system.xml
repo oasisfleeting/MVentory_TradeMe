@@ -137,7 +137,7 @@
             <list_as_new translate="label">
               <label>List as 'New'</label>
               <frontend_type>multiselect</frontend_type>
-              <source_model>mventory_tm/system_config_source_conditions</source_model>
+              <source_model>trademe/setting_source_conditions</source_model>
 
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
