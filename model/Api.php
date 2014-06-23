@@ -353,7 +353,8 @@ class MVentory_TradeMe_Model_Api {
 <IsBrandNew>' . $isBrandNew . '</IsBrandNew>
 <SendPaymentInstructions>true</SendPaymentInstructions>';
 
-      if (isset($account['category_image']) && $account['category_image'])
+      if ($photoId
+          && isset($account['category_image']) && $account['category_image'])
         $xml .= '<HasGallery>true</HasGallery>';
 
       if ($photoId) {
