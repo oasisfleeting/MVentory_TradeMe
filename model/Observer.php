@@ -254,11 +254,12 @@ class MVentory_TradeMe_Model_Observer {
             //on TradeMe. The flag is used in removeListing() method
             Mage::register('trademe_disable_withdrawal', true, true);
 
-            //Set global flag to enable our dummy shipping method
-            Mage::register('tm_allow_dummyshipping', true, true);
+            //Set global flag to enable dummy shipping method in MVentory API
+            //extension
+            Mage::register('mventory_allow_dummyshipping', true, true);
 
-            //Set customer ID for API access checks
-            Mage::register('tm_api_customer', $buyer, true);
+            //Set customer ID for API access checks in MVentory API extension
+            Mage::register('mventory_api_customer', $buyer, true);
 
             //Make order for the product
             Mage::getModel('mventory/cart_api')
