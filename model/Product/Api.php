@@ -22,7 +22,7 @@
  * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_TradeMe_Model_Product_Api extends MVentory_Tm_Model_Product_Api
+class MVentory_TradeMe_Model_Product_Api extends MVentory_API_Model_Product_Api
 {
   public function submit ($productId, $data) {
     $product = $this->_getProduct($productId, null, 'id');
