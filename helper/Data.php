@@ -102,7 +102,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     if (!$id = $product->getData('tm_current_listing_id'))
       return;
 
-    $website = Mage::helper('mventory_tm/product')->getWebsite($product);
+    $website = Mage::helper('mventory/product')->getWebsite($product);
 
     return 'http://www.'
            . ($this->isSandboxMode($website) ? 'tmsandbox' : 'trademe')
@@ -284,7 +284,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return array
    */
   public function prepareAccounts ($accounts, $product) {
-    $shippingType = Mage::helper('mventory_tm/product')->getShippingType(
+    $shippingType = Mage::helper('mventory/product')->getShippingType(
       $product,
       true
     );
@@ -310,7 +310,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return string Account ID
    */
   public function getAccountId ($productId, $website) {
-    return Mage::helper('mventory_tm')
+    return Mage::helper('mventory')
       ->getAttributesValue($productId, 'tm_account_id', $website);
   }
 
@@ -324,7 +324,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return MVentory_TradeMe_Helper_Data
    */
   public function setAccountId ($productId, $accountId, $website) {
-    Mage::helper('mventory_tm')->setAttributesValue(
+    Mage::helper('mventory')->setAttributesValue(
       $productId,
       array('tm_account_id' => $accountId),
       $website
@@ -340,7 +340,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return string Account ID
    */
   public function getCurrentAccountId ($productId) {
-    return Mage::helper('mventory_tm')
+    return Mage::helper('mventory')
       ->getAttributesValue($productId, 'tm_current_account_id');
   }
 
@@ -352,7 +352,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return MVentory_TradeMe_Helper_Data
    */
   public function setCurrentAccountId ($productId, $accountId) {
-    Mage::helper('mventory_tm')->setAttributesValue(
+    Mage::helper('mventory')->setAttributesValue(
       $productId,
       array('tm_current_account_id' => $accountId)
     );
@@ -367,7 +367,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return string Listing ID
    */
   public function getListingId ($productId) {
-    return Mage::helper('mventory_tm')->getAttributesValue(
+    return Mage::helper('mventory')->getAttributesValue(
       $productId,
       'tm_current_listing_id'
     );
@@ -381,7 +381,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @return MVentory_TradeMe_Helper_Data
    */
   public function setListingId ($listingId, $productId) {
-    Mage::helper('mventory_tm')->setAttributesValue(
+    Mage::helper('mventory')->setAttributesValue(
       $productId,
       array('tm_current_listing_id' => $listingId)
     );
@@ -538,7 +538,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    */
   public function importOptions ($data) {
     $shippingTypes =
-      Mage::getModel('mventory_tm/system_config_source_allowedshippingtypes')
+      Mage::getModel('mventory/system_config_source_allowedshippingtypes')
         ->toArray();
 
     if (!$shippingTypes)
@@ -842,6 +842,6 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
   public function isSandboxMode ($websiteId) {
     $path = MVentory_TradeMe_Model_Config::SANDBOX;
 
-    return Mage::helper('mventory_tm')->getConfig($path, $websiteId) == true;
+    return Mage::helper('mventory')->getConfig($path, $websiteId) == true;
   }
 }

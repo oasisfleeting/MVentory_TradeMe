@@ -162,7 +162,7 @@ class MVentory_TradeMe_Model_Observer {
     //Unset Random pseudo-account
     unset($accounts[null]);
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     //Get time with Magento timezone offset
     $now = localtime(Mage::getModel('core/date')->timestamp(time()), true);
@@ -261,7 +261,7 @@ class MVentory_TradeMe_Model_Observer {
             Mage::register('tm_api_customer', $buyer, true);
 
             //Make order for the product
-            Mage::getModel('mventory_tm/cart_api')
+            Mage::getModel('mventory/cart_api')
               ->createOrderForProduct($sku, $price, $qty, $buyer);
 
             Mage::unregister('mventory_website');
@@ -495,7 +495,7 @@ class MVentory_TradeMe_Model_Observer {
 
     $items = $order->getAllItems();
 
-    $productHelper = Mage::helper('mventory_tm/product');
+    $productHelper = Mage::helper('mventory/product');
     $trademe = Mage::helper('trademe');
 
     foreach ($items as $item) {
@@ -596,7 +596,7 @@ class MVentory_TradeMe_Model_Observer {
       ->getProduct()
       ->getData();
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
     $trademe = Mage::helper('trademe');
 
     $accounts = $trademe->getAccounts($website);
@@ -690,7 +690,7 @@ class MVentory_TradeMe_Model_Observer {
     if ($product->getId())
       return;
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory');
 
     $product->setData(
       'tm_relist',

@@ -76,7 +76,7 @@ class MVentory_TradeMe_Model_Api {
   );
 
   public function __construct () {
-    $this->_helper = Mage::helper('mventory_tm/product');
+    $this->_helper = Mage::helper('mventory/product');
   }
 
   private function _getConfig ($path) {
@@ -926,7 +926,7 @@ class MVentory_TradeMe_Model_Api {
 
     $_attrs = Mage::app()
       ->getLayout()
-      ->createBlock('mventory_tm/product_view_attributes')
+      ->createBlock('mventory/product_view_attributes')
       ->getAdditionalData(
           array('product_barcode_', 'mv_created_date'),
           false

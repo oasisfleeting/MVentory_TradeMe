@@ -26,7 +26,7 @@ class MVentory_TradeMe_ListingController
   extends Mage_Adminhtml_Controller_Action
 {
   public function submitAction () {
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
     $request = $this->getRequest();
 
     $params = $request->getParams();
@@ -120,7 +120,7 @@ class MVentory_TradeMe_ListingController
       $result = $connector->remove($product);
     }
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     if ($result === true) {
       $path = MVentory_TradeMe_Model_Config::SANDBOX;
@@ -151,7 +151,7 @@ class MVentory_TradeMe_ListingController
     $id = $this->_request->getParam('id');
     $product = Mage::getModel('catalog/product')->load($id);
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     if ($product->getId()) {
       $connector = new MVentory_TradeMe_Model_Api();
@@ -215,7 +215,7 @@ class MVentory_TradeMe_ListingController
 
   public function updateAction () {
     $request = $this->getRequest();
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $params = $request->getParams();
 

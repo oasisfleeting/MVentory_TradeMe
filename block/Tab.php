@@ -43,7 +43,7 @@ class MVentory_TradeMe_Block_Tab
 
     $product = $this->getProduct();
 
-    $this->_helper = Mage::helper('mventory_tm/product');
+    $this->_helper = Mage::helper('mventory/product');
     $this->_website = $this->_helper->getWebsite($product);
 
     $productId = $product->getId();
