@@ -87,6 +87,11 @@ class MVentory_TradeMe_Model_Observer {
                  ->addChild($id);
 
       $group->addAttribute('type', 'group');
+
+      if (isset($template['@']))
+        foreach ($template['@'] as $key => $value)
+          $group->addAttribute($key, $value);
+
       $group->addChild('frontend_model', 'trademe/account');
       $group->addChild('label', $account);
       $group->addChild('show_in_default', 0);
@@ -95,9 +100,15 @@ class MVentory_TradeMe_Model_Observer {
       $group->addChild('expanded', (int) $noAccounts);
       $group->addChild('sort_order', $position++);
 
+      if (isset($template['comment']))
+        $group->addChild('comment', $template['comment']);
+
       $fields = $group->addChild('fields');
 
       foreach ($template as $name => $field) {
+        if (!is_array($field) || $name == '@')
+          continue;
+
         $node = $fields->addChild($name);
 
         if (isset($field['@'])) {

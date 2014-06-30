@@ -46,7 +46,7 @@ class MVentory_TradeMe_Block_Account
                 ->setData($data)
                 ->toHtml();
 
-    return '<div style="width: 100%">'
+    return '<div style="float:right">'
            .  '<div class="form-buttons">'
            .    $button
            .  '</div>'
