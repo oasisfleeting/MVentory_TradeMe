@@ -112,7 +112,11 @@ class MVentory_TradeMe_Model_Matching
 
         $code = $_attributes[$attribute['id']];
 
-        $productValue = (array) $product->getData($code);
+        $productValue = $product->getData($code);
+        $productValue = is_string($productValue)
+                          ? explode(',', $productValue)
+                            : (array) $productValue;
+
         $ruleValue = (array) $attribute['value'];
 
         if (!count(array_intersect($productValue, $ruleValue)))
