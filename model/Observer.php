@@ -31,6 +31,13 @@ class MVentory_TradeMe_Model_Observer {
   const TAG_FREE_SLOTS = 'tag_trademe_free_slots';
   const TAG_EMAILS = 'tag_trademe_emails';
 
+  const __NO_SHIPPING_S = <<<'EOT'
+Warning: mVentory Trade Me account %s does not have a valid shipping configuration. Please import a configuration CSV file under mVentory Trade Me Settings tab
+EOT;
+  const __NO_SHIPPING_P = <<<'EOT'
+Warning: mVentory Trade Me accounts %s do not have a valid shipping configuration. Please import a configuration CSV file under mVentory Trade Me Settings tab
+EOT;
+
   public function sortChildren ($observer) {
     $content = Mage::app()
       ->getFrontController()
@@ -709,6 +716,27 @@ class MVentory_TradeMe_Model_Observer {
       (bool) $helper->getConfig(
         MVentory_TradeMe_Model_Config::ENABLE_LISTING,
         $helper->getCurrentWebsite()
+      )
+    );
+  }
+
+  public function showNoticeOnSettingsSave ($observer) {
+    if (!$website = $observer->getWebsite())
+      return;
+
+    $accounts = Mage::helper('trademe')->getAccounts($website, false);
+
+    foreach ($accounts as $account)
+      if (!(isset($account['shipping_types']) && $account['shipping_types']))
+        $noOptions[] = $account['name'];
+
+    if (!isset($noOptions))
+      return;
+
+    Mage::getSingleton('adminhtml/session')->addWarning(
+      Mage::helper('trademe')->__(
+        count($noOptions) > 1 ? self::__NO_SHIPPING_P : self::__NO_SHIPPING_S,
+        implode(', ', $noOptions)
       )
     );
   }
