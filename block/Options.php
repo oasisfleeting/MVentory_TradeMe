@@ -25,6 +25,10 @@
 class MVentory_TradeMe_Block_Options
   extends Mage_Adminhtml_Block_Widget_Grid {
 
+  const TYPE_TEXT = 0;
+  const TYPE_INT = 1;
+  const TYPE_BOOL = 2;
+
   protected $_helper = null;
   protected $_options = null;
 
@@ -43,19 +47,58 @@ class MVentory_TradeMe_Block_Options
     $this->_helper = Mage::helper('trademe');
 
     $this->_options = array(
-      'account_name' => 'Account',
-      'shipping_type' => 'Shipping type',
-      'minimal_price' => 'Minimal price',
-      'free_shipping_cost' => 'Free shipping cost',
-      'allow_buy_now' => 'Allow Buy Now',
-      'avoid_withdrawal' => 'Avoid withdrawal',
-      'add_fees' => 'Add fees',
-      'allow_pickup' => 'Allow pickup',
-      'category_image' => 'Add category image',
-      'buyer' => 'Buyer ID',
-      'duration' => 'Listing duration',
-      'shipping_options' => 'Shipping options',
-      'footer' => 'Footer description'
+      'account_name' => array(
+        'label' => 'Account',
+        'type' => self::TYPE_TEXT
+      ),
+      'shipping_type' => array(
+        'label' => 'Shipping type',
+        'type' => self::TYPE_TEXT
+      ),
+      'minimal_price' => array(
+        'label' => 'Minimal price',
+        'type' => self::TYPE_TEXT
+      ),
+      'free_shipping_cost' => array(
+        'label' => 'Free shipping cost',
+        'type' => self::TYPE_TEXT
+      ),
+      'allow_buy_now' => array(
+        'label' => 'Allow Buy Now',
+        'type' => self::TYPE_BOOL
+      ),
+      'avoid_withdrawal' => array(
+        'label' => 'Avoid withdrawal',
+        'type' => self::TYPE_BOOL
+      ),
+      'add_fees' => array(
+        'label' => 'Add fees',
+        'type' => self::TYPE_BOOL
+      ),
+      'allow_pickup' => array(
+        'label' => 'Allow pickup',
+        'type' => self::TYPE_BOOL
+      ),
+      'category_image' => array(
+        'label' => 'Add category image',
+        'type' => self::TYPE_BOOL
+      ),
+      'buyer' => array(
+        'label' => 'Buyer ID',
+        'type' => self::TYPE_INT
+      ),
+      'duration' => array(
+        'label' => 'Listing duration',
+        'type' => self::TYPE_INT
+      ),
+      'shipping_options' => array(
+        'label' => 'Shipping options',
+        'type' => self::TYPE_TEXT
+      ),
+      'footer' => array(
+        'label' => 'Footer description',
+        'type' => self::TYPE_TEXT
+      )
     );
   }
 
@@ -89,10 +132,20 @@ class MVentory_TradeMe_Block_Options
             $options['shipping_options']
               = $this->_exportShippingOptions($options['shipping_options']);
 
+          $options['allow_buy_now'] = (int) $options['allow_buy_now'];
+
           $row = $options + array(
             'account_name' => $account['name'],
             'shipping_type' => $_shippingTypes[$id]
           );
+
+          foreach ($row as $optionId => $optionValue)
+            if (isset($this->_options[$optionId]))
+              switch ($this->_options[$optionId]['type']) {
+                case self::TYPE_INT:
+                case self::TYPE_BOOL:
+                  $row[$optionId] = (int) $row[$optionId];
+              }
 
           $collection->addItem(new Varien_Object($row));
         }
@@ -134,9 +187,9 @@ class MVentory_TradeMe_Block_Options
    * @return MVentory_TradeMe_Block_Options
    */
   protected function _prepareColumns () {
-    foreach ($this->_options as $id => $label)
+    foreach ($this->_options as $id => $option)
       $this->addColumn($id, array(
-        'header' => $this->_helper->__($label),
+        'header' => $this->_helper->__($option['label']),
         'index' => $id
       ));
 
