@@ -247,7 +247,8 @@ EOT;
               $website
             );
 
-            if (!isset($accountData['shipping_types'][$shipping]['buyer'])) {
+            if (!(isset($accountData['shipping_types'][$shipping]['buyer'])
+                  && isset($accountData['shipping_types']['*']['buyer']))) {
               MVentory_TradeMe_Model_Api::debug(
                 'Error: shipping type ' . $shippingType . ' doesn\t exists in '
                 . $accountData['name'] . ' account. Product SKU: '
@@ -257,7 +258,9 @@ EOT;
               continue;
             }
 
-            $buyer = $accountData['shipping_types'][$shipping]['buyer'];
+            $buyer = isset($accountData['shipping_types'][$shipping]['buyer'])
+                       ? $accountData['shipping_types'][$shipping]['buyer']
+                         : $accountData['shipping_types']['*']['buyer'];
 
             //API function for creating order requires curren store to be set
             Mage::app()->setCurrentStore($store);
@@ -436,10 +439,18 @@ EOT;
         if (!in_array($shippingType, $accountData['allowed_shipping_types']))
           continue;
 
-        $minimalPrice = (float) $accountData
-          ['shipping_types']
-          [$shippingType]
-          ['minimal_price'];
+        $shippingTypes = $accountData['shipping_types'];
+
+        switch (true) {
+          case isset($shippingTypes[$shippingType]['minimal_price']):
+            $minimalPrice = $shippingTypes[$shippingType]['minimal_price'];
+            break;
+          case isset($shippingTypes['*']['minimal_price']):
+            $minimalPrice = $shippingTypes['*']['minimal_price'];
+            break;
+          default:
+            $minimalPrice = -1;
+        }
 
         if ($minimalPrice && ($product->getPrice() < $minimalPrice))
           continue;
@@ -483,7 +494,7 @@ EOT;
 
           if (!--$accounts[$accountId]['free_slots']) {
             $accountData['sync_data']['duration'] = $trademe
-              ->getDuration($accountData['shipping_types'][$shippingType]);
+              ->getDuration($shippingTypes[$shippingType]);
 
             Mage::app()->saveCache(
               serialize($accountData['sync_data']),

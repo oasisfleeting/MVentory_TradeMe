@@ -176,9 +176,13 @@ class MVentory_TradeMe_Block_Options
    * @return array
    */
   protected function _getShippingTypes () {
-    return
-      Mage::getModel('mventory/system_config_source_allowedshippingtypes')
-        ->toArray();
+    $types
+      = Mage::getModel('mventory/system_config_source_allowedshippingtypes')
+          ->toArray();
+
+    $types['*'] = '*';
+
+    return $types;
   }
 
   /**

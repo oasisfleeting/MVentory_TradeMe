@@ -290,9 +290,15 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     );
 
     foreach ($accounts as &$account) {
-      if (isset($account['shipping_types'][$shippingType])) {
+      $hasShippingType = isset($account['shipping_types'][$shippingType]);
+
+      if ($hasShippingType || isset($account['shipping_types']['*'])) {
         $account['shipping_type'] = $shippingType;
-        $account = $account + $account['shipping_types'][$shippingType];
+
+
+        $account = $hasShippingType
+                     ? $account + $account['shipping_types'][$shippingType]
+                       : $account + $account['shipping_types']['*'];
       }
 
       unset($account['shipping_types']);
@@ -554,6 +560,8 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
 
     foreach ($accounts as $id => $account)
       $accountMap[strtolower($account['name'])] = $id;
+
+    $shippingTypeMap['*'] = '*';
 
     foreach ($shippingTypes as $id => $label)
       $shippingTypeMap[strtolower($label)] = $id;
