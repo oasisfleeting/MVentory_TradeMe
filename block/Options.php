@@ -128,7 +128,7 @@ class MVentory_TradeMe_Block_Options
 
         foreach ($shippingTypes as $id => $options) {
           if (isset($options['shipping_options'])
-              && $options['shipping_options'])
+              && is_array($options['shipping_options']))
             $options['shipping_options']
               = $this->_exportShippingOptions($options['shipping_options']);
 
