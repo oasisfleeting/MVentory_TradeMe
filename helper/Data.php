@@ -566,8 +566,6 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     foreach ($shippingTypes as $id => $label)
       $shippingTypeMap[strtolower($label)] = $id;
 
-    unset($accounts, $shippingTypes);
-
     $groupId = $data->getGroupId();
     $field = $data->getField();
 
@@ -624,9 +622,12 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
 
       $io->streamClose();
 
-      if ($data)
+      if ($data) {
+        $data = $this->_restructureImportedOptions($data);
         $this->_saveImportedOptions($data, $website);
-      else
+
+        $missingSettings = $this->_checkMissingSettings($data, $shippingTypes);
+      } else
         $params['errors'][] = $this->__('No options in the file');
 
     } catch (Mage_Core_Exception $e) {
@@ -655,6 +656,24 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
       Mage::throwException(
         $this->__('File has not been imported') . '<br />' . $error
       );
+    }
+
+    if ($missingSettings) {
+      foreach ($missingSettings as $accountId => $shippingTypes) {
+        $name = $accounts[$accountId]['name'];
+
+        foreach ($shippingTypes as $type)
+          $msgs[] = $this->__(
+            'Shipping type %s not configured for account %s.',
+            $type,
+            $name
+          );
+      }
+
+      if (isset($msgs))
+        Mage::getSingleton('adminhtml/session')->addWarning(
+          implode('<br />', $msgs)
+        );
     }
   }
 
@@ -821,16 +840,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
    * @param string $value
    * @return bool|float
    */
-  protected function _saveImportedOptions ($data, $website) {
-    foreach ($data as $options) {
-      $accountId = $options['account'];
-      $shippingTypeId = $options['shipping_type'];
-
-      unset($options['account'], $options['shipping_type']);
-
-      $accounts[$accountId][$shippingTypeId] = $options;
-    }
-
+  protected function _saveImportedOptions ($accounts, $website) {
     $websiteId = $website->getId();
     $config = Mage::getConfig();
 
@@ -845,6 +855,35 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     $config->reinit();
 
     Mage::app()->reinitStores();
+  }
+
+  protected function _restructureImportedOptions ($data) {
+    $accounts = array();
+
+    foreach ($data as $options) {
+      $accountId = $options['account'];
+      $shippingTypeId = $options['shipping_type'];
+
+      unset($options['account'], $options['shipping_type']);
+
+      $accounts[$accountId][$shippingTypeId] = $options;
+    }
+
+    return $accounts;
+  }
+
+  protected function _checkMissingSettings ($accounts, $shippingTypes) {
+    $result = array();
+
+    foreach ($accounts as $id => $data) {
+      if (isset($data['*']))
+        continue;
+
+      if ($missingTypes = array_diff_key($shippingTypes, $data))
+        $result[$id] = $missingTypes;
+    }
+
+    return $result;
   }
 
   public function isSandboxMode ($websiteId) {
