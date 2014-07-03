@@ -52,4 +52,10 @@
       <block type="trademe/matching" name="trademe.matching" template="trademe/matching.phtml" />
     </reference>
   </adminhtml_catalog_product_set_edit>
+
+  <adminhtml_system_config_edit>
+    <reference name="head">
+      <action method="addCss"><css>trademe/css/styles.css</css></action>
+    </reference>
+  </adminhtml_system_config_edit>
 </layout>

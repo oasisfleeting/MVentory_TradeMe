@@ -161,3 +161,8 @@
 #product_info_tabs_trademe_content .trademe-option {
   padding-right: 10px;
 }
+
+/* Settings */
+fieldset[id^="trademe_account_"] > .comment {
+  font-weight: bold;
+}
