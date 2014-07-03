@@ -28,6 +28,7 @@ class MVentory_TradeMe_Block_Options
   const TYPE_TEXT = 0;
   const TYPE_INT = 1;
   const TYPE_BOOL = 2;
+  const TYPE_PRICE = 3;
 
   protected $_helper = null;
   protected $_options = null;
@@ -57,11 +58,11 @@ class MVentory_TradeMe_Block_Options
       ),
       'minimal_price' => array(
         'label' => 'Minimal price',
-        'type' => self::TYPE_TEXT
+        'type' => self::TYPE_PRICE
       ),
       'free_shipping_cost' => array(
         'label' => 'Free shipping cost',
-        'type' => self::TYPE_TEXT
+        'type' => self::TYPE_PRICE
       ),
       'allow_buy_now' => array(
         'label' => 'Allow Buy Now',
@@ -145,6 +146,9 @@ class MVentory_TradeMe_Block_Options
                 case self::TYPE_INT:
                 case self::TYPE_BOOL:
                   $row[$optionId] = (int) $row[$optionId];
+                  break;
+                case self::TYPE_PRICE:
+                  $row[$optionId] = number_format((float) $row[$optionId], 2);
               }
 
           $collection->addItem(new Varien_Object($row));
