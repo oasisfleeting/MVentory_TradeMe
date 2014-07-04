@@ -689,7 +689,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
 
     //Validate row
     if (count($row) < 10) {
-      $msg = 'Invalid TradeMe options format in the row #%s';
+      $msg = 'Invalid TradeMe options format in row %s';
       $params['errors'][] = $this->__($msg, $rowNumber);
 
       return false;
@@ -702,7 +702,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     $account = strtolower($row[0]);
 
     if (!isset($params['account'][$account])) {
-      $msg = 'Invalid account ("%s") in the row #%s.';
+      $msg = 'Invalid account ("%s") in row %s.';
       $params['errors'][] = $this->__($msg, $row[0], $rowNumber);
 
       return false;
@@ -713,7 +713,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     $shippingType = strtolower($row[1]);
 
     if (!isset($params['type'][$shippingType])) {
-      $msg = 'Invalid shipping type ("%s") in the row #%s.';
+      $msg = 'Invalid shipping type ("%s") in row %s.';
       $params['errors'][] = $this->__($msg, $row[1], $rowNumber);
 
       return false;
@@ -725,7 +725,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     $minimalPrice = $this->_parseDecimalValue($row[2]);
 
     if ($minimalPrice === false) {
-      $msg = 'Invalid Minimal price ("%s") value in the row #%s.';
+      $msg = 'Invalid Minimal price value ("%s") in row %s.';
       $params['errors'][] = $this->__($msg, $row[2], $rowNumber);
 
       return false;
@@ -734,7 +734,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     $freeShippingCost = $this->_parseDecimalValue($row[3]);
 
     if ($freeShippingCost === false) {
-      $msg = 'Invalid Free shipping cost ("%s") value in the row #%s.';
+      $msg = 'Invalid Free shipping cost value ("%s") in row %s.';
       $params['errors'][] = $this->__($msg, $row[3], $rowNumber);
 
       return false;
@@ -753,7 +753,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     $hash = sprintf('%s-%s', $account, $shippingType);
 
     if (isset($params['hash'][$hash])) {
-      $msg = 'Duplicate Row #%s.';
+      $msg = 'Duplicate row %s.';
 
       $params['errors'][] = $this->__($msg, $rowNumber);
 
