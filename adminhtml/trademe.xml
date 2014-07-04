@@ -56,6 +56,11 @@
   <adminhtml_system_config_edit>
     <reference name="head">
       <action method="addCss"><css>trademe/css/styles.css</css></action>
+      <action method="addJs"><js>trademe/adminhtml.js</js></action>
+    </reference>
+
+    <reference name="before_body_end">
+      <block type="trademe/settings" name="trademe.settings" />
     </reference>
   </adminhtml_system_config_edit>
 </layout>

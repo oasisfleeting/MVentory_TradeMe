@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<jstranslator>
+  <trademe_settings_error translate="message" module="trademe">
+    <message>An error occured while retrieving response</message>
+  </trademe_settings_error>
+</jstranslator>
