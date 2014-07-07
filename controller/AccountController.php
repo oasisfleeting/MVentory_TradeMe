@@ -38,41 +38,24 @@ class MVentory_TradeMe_AccountController
     $accountId = $this->getRequest()->getParam('account_id');
     $website = $this->getRequest()->getParam('website');
 
-    if (!$accountId || !$website) {
-      $body = array(
+    if (!$accountId || !$website)
+      return $this->_response(array(
         'error' => true,
         'message' => $this->__('Account ID or website are not specified')
-      );
-
-      $body = Mage::helper('core')->jsonEncode($body);
-
-      $this
-        ->getResponse()
-        ->setBody($body);
-
-      return;
-    }
+      ));
 
     $auth = new MVentory_TradeMe_Model_Account($accountId, $website);
 
-    $ajaxRedirect = $auth->authenticate();
-
-    if ($ajaxRedirect)
-      $body = compact('ajaxRedirect');
-    else
-      $body = array(
-        'error' => true,
-        'message'
-          => $this->__('An error occurred while obtaining request token')
-      );
-
-    $body = Mage::helper('core')->jsonEncode($body);
-
-    $this
-      ->getResponse()
-      ->setBody($body);
-
-    return;
+    return $this->_response(
+      ($ajaxRedirect = $auth->authenticate())
+        ? array('ajaxRedirect' => $ajaxRedirect)
+          : array(
+              'error' => true,
+              'message' => $this->__(
+                'An error occurred while obtaining request token'
+              )
+            )
+    );
   }
 
   /**
