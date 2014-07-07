@@ -248,7 +248,7 @@ EOT;
             );
 
             if (!(isset($accountData['shipping_types'][$shipping]['buyer'])
-                  && isset($accountData['shipping_types']['*']['buyer']))) {
+                  || isset($accountData['shipping_types']['*']['buyer']))) {
               MVentory_TradeMe_Model_Api::debug(
                 'Error: shipping type ' . $shippingType . ' doesn\t exists in '
                 . $accountData['name'] . ' account. Product SKU: '
