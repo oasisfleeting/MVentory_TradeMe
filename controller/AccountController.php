@@ -120,4 +120,81 @@ class MVentory_TradeMe_AccountController
 
     $this->_redirect('adminhtml/system_config/edit', $params);
   }
+
+  /**
+   * Checks if specified account is used by products
+   *
+   * @return MVentory_TradeMe_AccountController
+   */
+  public function canremoveAction () {
+    $request = $this->getRequest();
+
+    $accountId = $request->getParam('account_id');
+    $website = Mage::app()->getWebsite($request->getParam('website'));
+
+    if (!($accountId && $website->getId()))
+      return $this->_response(array(
+        'error' => true,
+        'message' => $this->__('Account ID or website are not specified')
+      ));
+
+    $accounts = Mage::helper('trademe')->getAccounts($website);
+
+    if (!($accounts && isset($accounts[$accountId])))
+      return $this->_response(array(
+        'error' => true,
+        'message' => $this->__('Specified account doesn\'t exist')
+      ));
+
+    $products = Mage::getModel('catalog/product')
+      ->getCollection()
+      ->addAttributeToFilter('type_id', 'simple')
+      ->addAttributeToFilter('tm_current_listing_id', array('neq' => ''))
+      ->addAttributeToFilter('tm_current_account_id', $accountId)
+      ->addStoreFilter($website->getDefaultStore());
+
+    return $this->_response(array('hasProducts' => $products->count() > 0));
+  }
+
+  /**
+   * Removes specified account
+   *
+   * @return MVentory_TradeMe_AccountController
+   */
+  public function removeAction () {
+    $request = $this->getRequest();
+
+    $accountId = $request->getParam('account_id');
+    $website = $request->getParam('website');
+
+    if (!($accountId && $website))
+      return $this->_response(array(
+        'error' => true,
+        'message' => $this->__('Account ID or website are not specified')
+      ));
+
+    $result = Mage::helper('trademe')->removeAccount(
+      $accountId,
+      Mage::app()->getWebsite($website)
+    );
+
+    if (!$result)
+      return $this->_response(array(
+        'error' => true,
+        'message' => $this->__('An error occured while removing account')
+      ));
+
+    return $this->_response(array('ajaxRedirect' => $this->getUrl(
+      'adminhtml/system_config/edit',
+      array('section' => 'trademe', 'website' => $website)
+    )));
+  }
+
+  protected function _response ($data) {
+    $this
+      ->getResponse()
+      ->setBody(Mage::helper('core')->jsonEncode($data));
+
+    return $this;
+  }
 }

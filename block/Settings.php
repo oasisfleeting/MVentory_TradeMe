@@ -33,7 +33,9 @@ class MVentory_TradeMe_Block_Settings extends Mage_Adminhtml_Block_Abstract
   protected function _toHtml () {
     $trademe = array(
       'url' => array(
-        'authenticate' => $this->_getAuthoriseUrl()
+        'authenticate' => $this->_getUrl('trademe/account/authenticate'),
+        'canremove' => $this->_getUrl('trademe/account/canremove'),
+        'remove' => $this->_getUrl('trademe/account/remove')
       )
     );
 
@@ -42,11 +44,10 @@ class MVentory_TradeMe_Block_Settings extends Mage_Adminhtml_Block_Abstract
     );
   }
 
-  protected function _getAuthoriseUrl () {
-    $route = 'trademe/account/authenticate';
-    $params = array('website' => $this->getRequest()->getParam('website', ''));
-
-    return $this->getUrl($route, $params);
+  protected function _getUrl ($route) {
+    return $this->getUrl(
+      $route,
+      array('website' => $this->getRequest()->getParam('website', ''))
+    );
   }
-
 }

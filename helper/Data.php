@@ -308,6 +308,35 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
   }
 
   /**
+   * Remove account
+   *
+   * @param string $id Account ID
+   * @param Mage_Core_Model_Website $website Website
+   * @return bool
+   */
+  public function removeAccount ($id, $website) {
+    $accounts = $this->getAccounts($website, false);
+
+    if (!isset($accounts[$id]))
+      return;
+
+    $config = Mage::getConfig();
+
+    foreach (array_keys($accounts[$id]) as $setting)
+      $config->deleteConfig(
+        'trademe/' . $id . '/' . $setting,
+        'websites',
+        $website->getId()
+      );
+
+    $config->reinit();
+
+    Mage::app()->reinitStores();
+
+    return true;
+  }
+
+  /**
    * Return account ID which will be used for the next listing of specified
    * product on TradeMe
    *

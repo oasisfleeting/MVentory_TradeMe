@@ -166,3 +166,7 @@
 fieldset[id^="trademe_account_"] > .comment {
   font-weight: bold;
 }
+
+.trademe-account-buttons button {
+  margin: 0 0 0 5px;
+}

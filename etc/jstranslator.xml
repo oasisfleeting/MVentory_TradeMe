@@ -3,4 +3,12 @@
   <trademe_settings_error translate="message" module="trademe">
     <message>An error occured while retrieving response</message>
   </trademe_settings_error>
+
+  <trademe_settings_account_remove translate="message" module="trademe">
+    <message>Are you sure?</message>
+  </trademe_settings_account_remove>
+
+  <trademe_settings_account_in_use_remove translate="message" module="trademe">
+    <message>Some products are currently listed under this account. Removing the account authorisation will prevent mVentory from tracking those auctions. Proceed anyway?</message>
+  </trademe_settings_account_in_use_remove>
 </jstranslator>

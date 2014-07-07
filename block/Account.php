@@ -32,7 +32,7 @@ class MVentory_TradeMe_Block_Account
 
     $accountId = $element->getGroup()->getName();
 
-    $data = array(
+    $authButton = array(
       'id' => 'trademe_button_auth_' . $accountId,
       'label' => $this->__('Authorise'),
       'onclick' => 'javascript:trademe_auth_account(\''
@@ -40,15 +40,22 @@ class MVentory_TradeMe_Block_Account
                    . '\'); return false;'
     );
 
-    $button = $this
-                ->getLayout()
-                ->createBlock('adminhtml/widget_button')
-                ->setData($data)
-                ->toHtml();
+    $removeButton = array(
+      'id' => 'trademe_button_remove_' . $accountId,
+      'label' => $this->__('Remove'),
+      'onclick' => 'javascript:trademe_remove_account(\''
+                   . $accountId
+                   . '\'); return false;'
+    );
+
+    $buttonBlock = $this
+      ->getLayout()
+      ->createBlock('adminhtml/widget_button');
 
     return '<div style="float:right">'
-           .  '<div class="form-buttons">'
-           .    $button
+           .  '<div class="form-buttons trademe-account-buttons">'
+           .    $buttonBlock->setData($authButton)->toHtml()
+           .    $buttonBlock->setData($removeButton)->toHtml()
            .  '</div>'
            .  '<div style="clear: both"></div>'
            . '</div>'
