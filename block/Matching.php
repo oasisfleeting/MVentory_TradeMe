@@ -81,7 +81,8 @@ class MVentory_TradeMe_Block_Matching
       $this->_attrs[$option->getAttributeId()]['values'][$option->getId()]
         = $option->getValue();
 
-    $this->_categories = (new MVentory_TradeMe_Model_Api())->getCategories();
+    $api = new MVentory_TradeMe_Model_Api();
+    $this->_categories = $api->getCategories();
   }
 
   /**

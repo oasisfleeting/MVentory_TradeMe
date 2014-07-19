@@ -247,7 +247,8 @@ class MVentory_TradeMe_ListingController
       return;
     }
 
-    $result = (new MVentory_TradeMe_Model_Api())->update($product, null, $data);
+    $api = new MVentory_TradeMe_Model_Api();
+    $result = $api->update($product, null, $data);
 
     if (!is_int($result)) {
       Mage::getSingleton('adminhtml/session')->addError($helper->__($result));

@@ -139,7 +139,8 @@ class MVentory_TradeMe_Model_Matching
     if (!$categoryId)
       return false;
 
-    $categories = (new MVentory_TradeMe_Model_Api())->getCategories();
+    $api = new MVentory_TradeMe_Model_Api();
+    $categories = $api->getCategories();
 
     if (!isset($categories[$categoryId]))
       return false;

@@ -218,7 +218,9 @@ EOT;
       //if ($customer->getId())
       //  $products->addPriceData($customer->getGroupId());
 
-      $connector = (new MVentory_TradeMe_Model_Api())
+      $connector = new MVentory_TradeMe_Model_Api();
+
+      $connector
         ->setWebsiteId($website->getId())
         ->setAccountId($accountId);
 
@@ -455,8 +457,8 @@ EOT;
         if ($minimalPrice && ($product->getPrice() < $minimalPrice))
           continue;
 
-        $result = (new MVentory_TradeMe_Model_Api())
-          ->send($product, $matchResult['id'], $accountId);
+        $api = new MVentory_TradeMe_Model_Api();
+        $result = $api->send($product, $matchResult['id'], $accountId);
 
         if (trim($result) == 'Insufficient balance') {
           $cacheId = array(
@@ -577,19 +579,20 @@ EOT;
 
       $hasError = false;
 
+      $api = new MVentory_TradeMe_Model_Api();
+
       if ($avoidWithdrawal) {
         $price = $product->getPrice() * 5;
 
         if ($fields['add_fees'])
           $price = $trademe->addFees($price);
 
-        $result = (new MVentory_TradeMe_Model_Api())
-          ->update($product, array('StartPrice' => $price));
+        $result = $api->update($product, array('StartPrice' => $price));
 
         if (!is_int($result))
           $hasError = true;
       } else {
-        $result = (new MVentory_TradeMe_Model_Api())->remove($product);
+        $result = $api->remove($product);
 
         if ($result !== true)
           $hasError = true;

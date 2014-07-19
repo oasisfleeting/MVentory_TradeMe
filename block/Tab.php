@@ -124,7 +124,8 @@ class MVentory_TradeMe_Block_Tab
   }
 
   public function getCategories () {
-    return (new MVentory_TradeMe_Model_Api())->getCategories();
+    $api = new MVentory_TradeMe_Model_Api();
+    return $api->getCategories();
   }
 
   public function getPreselectedCategories () {
