@@ -43,7 +43,7 @@ class MVentory_TradeMe_Block_Matching
                ->setAttributeSetFilter($this->_getSetId());
 
     foreach ($attrs as $attr) {
-      if (substr($attr->getAttributeCode(), -1) != '_')
+      if (!$attr->getIsUserDefined())
         continue;
 
       $type = $attr->getFrontendInput();
