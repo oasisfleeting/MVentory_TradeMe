@@ -88,6 +88,7 @@ where c.path like @category_filter_path
   and cn.entity_id = cp.category_id
   and o.option_id = ov.option_id
   and cn.value = ov.value
+order by c.level
 on duplicate key update value = values(value)
 ');
 
