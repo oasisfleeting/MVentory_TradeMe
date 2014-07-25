@@ -75,6 +75,38 @@ class MVentory_TradeMe_Model_Api {
     7 => 'Seven'
   );
 
+  private $_htmlConvert = array(
+    //Remove all CR and LF symbols
+    '#\R+#s' => '',
+
+    //Remove any whitespace symbols surrounding tags
+    '#\s*(<[^<>]+>)\s*#is' => '\1',
+
+    //Replace single tab symbol, &nbsp; and whitespace symbols with space symbol
+    '#\t|&nbsp;|\s{2,}#s' => ' ',
+
+    //Remove <table> tag and its content completely
+    '#<table[^<>]*>.*</table>#is' => '',
+
+    //Replace <li> tag with '* ' string
+    '#<li[^<>]*>#i' => '* ',
+
+    //Replace opening and ending <div>, <p>, <hx> tags with 2 empty lines
+    '#</?(div|p|h[1-6])[^<>]*>#i' => "\r\n\r\n",
+
+    //Replace multiple empty lines with single line
+    '#\R{2,}#s' => "\r\n\r\n",
+
+    //Replace <br>, </br>, </li> tags with newline symbol
+    '#</?br[^<>]*>|</li>#i' => "\r\n",
+
+    //Remove remained tags
+    '#<[^<>]+>#s' => '',
+
+    //Remove all CR and LF symbols from start and end
+    '#|^\R+|\R+$#s' => '',
+  );
+
   public function __construct () {
     $this->_helper = Mage::helper('mventory/product');
   }
@@ -908,20 +940,22 @@ class MVentory_TradeMe_Model_Api {
                      ->getRoutePath();
 
     $shortDescription = isset($data['short_description'])
-                          ? $data['short_description']
+                          ? $this->_removeHtml(trim($data['short_description']))
                             : '';
 
     $search[] = '{{sd}}';
     $replace[] = strlen($shortDescription) > 5 ? $shortDescription : '';
 
-    $fullDescription = isset($data['description']) ? $data['description'] : '';
+    $fullDescription = isset($data['description'])
+                         ? $this->_removeHtml(trim($data['description']))
+                           : '';
 
     $search[] = '{{fd}}';
     $replace[] = strlen($fullDescription) > 5 ? $fullDescription : '';
 
     $search[] = '{{fs}}';
     $replace[] = isset($data['free_shipping_text'])
-                   ? $data['free_shipping_text']
+                   ? trim($data['free_shipping_text'])
                      : '';
 
     $_attrs = Mage::app()
@@ -935,7 +969,10 @@ class MVentory_TradeMe_Model_Api {
     $attrs = '';
 
     foreach ($_attrs as $_attr)
-      $attrs .= $_attr['label'] . ': ' . $_attr['value'] . "\r\n";
+      $attrs .= $_attr['label']
+                . ': '
+                . $this->_removeHtml(trim($_attr['value']))
+                . "\r\n";
 
     $search[] = '{{attrs}}';
     $replace[] = rtrim($attrs);
@@ -951,6 +988,16 @@ class MVentory_TradeMe_Model_Api {
     } while ($before != $after);
 
     return trim($description);
+  }
+
+  public function _removeHtml ($text) {
+    return preg_match('#</?[^<>]+>#', $text)
+             ? preg_replace(
+                 array_keys($this->_htmlConvert),
+                 array_values($this->_htmlConvert),
+                 $text
+               )
+               : $text;
   }
 
   public function _loadCategories () {
