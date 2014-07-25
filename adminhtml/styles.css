@@ -170,3 +170,9 @@ fieldset[id^="trademe_account_"] > .comment {
 .trademe-account-buttons button {
   margin: 0 0 0 5px;
 }
+
+.trademe-setting-hint {
+        font-weight:bold;
+        margin:0 0 10px;
+}
+

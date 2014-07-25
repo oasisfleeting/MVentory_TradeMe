@@ -41,6 +41,15 @@
       <sort_order>0</sort_order>
 
       <groups>
+        <hint>
+          <frontend_model>trademe/setting_hint</frontend_model>
+
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>1</show_in_store>
+
+          <sort_order>0</sort_order>
+        </hint>
         <settings translate="label">
           <label>Settings</label>
 
@@ -51,8 +60,7 @@
           <sort_order>1</sort_order>
 
           <account_template translate="comment" foo="bar">
-            <comment>Warning: Save config after changing API keys before pressing Authorise button.</comment>
-
+            <comment>Save config after changing Consumer keys before pressing Authorise button.</comment>
             <name translate="label">
               <label>Name</label>
               <frontend_type>text</frontend_type>
@@ -64,8 +72,9 @@
               <sort_order>1</sort_order>
             </name>
 
-            <key translate="label">
-              <label>API Key</label>
+            <key translate="label tooltip">
+              <label>Consumer Key</label>
+              <tooltip>See documentation for how to obtain the Consumer key and secret from Trade Me.</tooltip>
               <frontend_type>text</frontend_type>
 
               <show_in_default>0</show_in_default>
@@ -76,7 +85,7 @@
             </key>
 
             <secret translate="label">
-              <label>API Secret</label>
+              <label>Consumer Secret</label>
               <frontend_type>text</frontend_type>
 
               <show_in_default>0</show_in_default>
@@ -86,8 +95,10 @@
               <sort_order>3</sort_order>
             </secret>
 
-            <max_listings translate="label">
+            <max_listings translate="label comment tooltip">
               <label>Max Number of Listings</label>
+              <comment>Enter 0 to disable automatic submissions.</comment>
+              <tooltip>A limit for automatic product listing submissions. Automatic submissions are only performed if the number of currently listed products (including manual listed products) is below this limit.</tooltip>
               <frontend_type>text</frontend_type>
 
               <show_in_default>0</show_in_default>
@@ -99,8 +110,9 @@
           </account_template>
 
           <fields>
-            <sandbox translate="label">
+            <sandbox translate="label comment">
               <label>Sandbox</label>
+              <comment>Select No to use Trade Me. Select Yes to use Trade Me Sandbox.</comment>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
@@ -111,9 +123,10 @@
               <sort_order>102</sort_order>
             </sandbox>
 
-            <cron translate="label comment">
-              <label>Cron interval (in minutes)</label>
-              <comment>Zero = no cron</comment>
+            <cron translate="label comment tooltip">
+              <label>Magento cron interval (in minutes)</label>
+              <tooltip>Cron.php must be running as a cron job for this feature to work. See Magento documentation for more details on Cron.php.</tooltip>
+              <comment>Enter 0 to disable cron.</comment>
               <frontend_type>text</frontend_type>
               <backend_model>trademe/setting_backend_cron</backend_model>
 
@@ -124,8 +137,10 @@
               <sort_order>103</sort_order>
             </cron>
 
-            <enable_listing translate="label">
-              <label>Enable TradeMe for new products</label>
+            <enable_listing translate="label comment tooltip">
+              <label>Enable Trade Me for new products</label>
+              <comment>Default value for the Allow to List flag for new products.</comment>
+              <tooltip>Allow to List flag controls whether a product is allowed to be listed on Trade Me.</tooltip>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
@@ -136,8 +151,9 @@
               <sort_order>104</sort_order>
             </enable_listing>
 
-            <list_as_new translate="label">
+            <list_as_new translate="label comment">
               <label>List as 'New'</label>
+              <comment>Select product conditions that should be listed on Trade Me as New. Hold Ctrl to select multiple items.</comment>
               <frontend_type>multiselect</frontend_type>
               <source_model>trademe/setting_source_conditions</source_model>
 
@@ -161,7 +177,8 @@
             </mapping_store>
 
             <import translate="label">
-              <label>Import</label>
+              <label>Import configuration file</label>
+              <tooltip>Export the configuration file, edit settings and import it back. See documentation for a detailed explanation of the format.</tooltip>
               <frontend_type>file</frontend_type>
               <backend_model>trademe/setting_backend_options</backend_model>
 
@@ -173,7 +190,7 @@
             </import>
 
             <export translate="label">
-              <label>Export</label>
+              <label>Export configuration file</label>
               <frontend_model>trademe/setting_options</frontend_model>
 
               <show_in_default>0</show_in_default>

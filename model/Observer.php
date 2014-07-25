@@ -32,10 +32,10 @@ class MVentory_TradeMe_Model_Observer {
   const TAG_EMAILS = 'tag_trademe_emails';
 
   const __NO_SHIPPING_S = <<<'EOT'
-Warning: mVentory Trade Me account %s does not have a valid shipping configuration. Please import a configuration CSV file under mVentory Trade Me Settings tab
+Warning: mVentory Trade Me account %s does not have a valid shipping configuration. Please import a configuration CSV file.
 EOT;
   const __NO_SHIPPING_P = <<<'EOT'
-Warning: mVentory Trade Me accounts %s do not have a valid shipping configuration. Please import a configuration CSV file under mVentory Trade Me Settings tab
+Warning: mVentory Trade Me accounts %s do not have a valid shipping configuration. Please import a configuration CSV file.
 EOT;
 
   public function sortChildren ($observer) {
