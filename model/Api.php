@@ -262,7 +262,13 @@ class MVentory_TradeMe_Model_Api {
                .  MVentory_TradeMe_Model_Config::DESCRIPTION_MAX_LENGTH
                . ' characters';
 
-      $description = htmlspecialchars($description);
+      //Convert all HTML entities to chars first (to allow entities which
+      //are not exists in XML) and then convert special chars to entities
+      //to not break XML
+      //Set encoding parameter to support PHP < 5.4
+      $description = htmlspecialchars(
+        html_entity_decode($description, ENT_COMPAT, 'UTF-8')
+      );
 
       $photoId = null;
 
@@ -726,7 +732,11 @@ class MVentory_TradeMe_Model_Api {
 
           unset($_data);
 
-          $description = htmlspecialchars($description);
+          //Convert all HTML entities to chars first (to allow entities which
+          //are not exists in XML) and then convert special chars to entities
+          //to not break XML
+          //Set encoding parameter to support PHP < 5.4
+          $description = html_entity_decode($description, ENT_COMPAT, 'UTF-8');
         }
         $parameters['Description'] = array($description);
       }
