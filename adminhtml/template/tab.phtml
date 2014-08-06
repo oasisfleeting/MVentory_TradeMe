@@ -293,14 +293,14 @@ jQuery(document).ready(function ($) {
         $option.val(-1);
     }
 
-    trademe_update_total_price(data['product']['price'], account);
+    trademe_update_total_price(data['product'], account);
   });
 
   $('#trademe-tab-add-fees, #trademe-tab-shipping-type').on(
     'change',
     function () {
       trademe_update_total_price(
-        data['product']['price'],
+        data['product'],
         data['accounts'][$('#tm_account').val()]
       );
     }

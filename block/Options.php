@@ -33,6 +33,9 @@ class MVentory_TradeMe_Block_Options
   protected $_helper = null;
   protected $_options = null;
 
+  //Cache some data
+  private $_addfeesValues = null;
+
   /**
    * Define grid properties
    *
@@ -74,7 +77,8 @@ class MVentory_TradeMe_Block_Options
       ),
       'add_fees' => array(
         'label' => 'Add fees',
-        'type' => self::TYPE_BOOL
+        'type' => self::TYPE_TEXT,
+        'prepare' => '_prepareAddfeesValue'
       ),
       'allow_pickup' => array(
         'label' => 'Allow pickup',
@@ -199,6 +203,21 @@ class MVentory_TradeMe_Block_Options
   }
 
   /**
+   * Return all values for Add fees option
+   *
+   * @return array
+   */
+  protected function _getAddfeesValues () {
+    if ($this->_addfeesValues !== null)
+      return $this->_addfeesValues;
+
+    $this->_addfeesValues = Mage::getModel('trademe/attribute_source_addfees')
+      ->toArray();
+
+    return $this->_addfeesValues;
+  }
+
+  /**
    * Prepare table columns
    *
    * @return MVentory_TradeMe_Block_Options
@@ -235,5 +254,19 @@ class MVentory_TradeMe_Block_Options
       $_options .= "\r\n" . $option['price'] . ',' . $option['method'];
 
     return substr($_options, 2);
+  }
+
+  /**
+   * Prepare value of Add fees option for export
+   *
+   * @param $value int Value to prepare
+   * @return string
+   */
+  protected function _prepareAddfeesValue ($value) {
+    $options = $this->_getAddfeesValues();
+
+    return isset($options[$value])
+             ? $options[$value]
+               : $options[MVentory_TradeMe_Model_Config::FEES_NO];
   }
 }

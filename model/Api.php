@@ -334,7 +334,9 @@ class MVentory_TradeMe_Model_Api {
       //    $title = $freeShippingTitle;
       //}
 
-      $price = $helper->getProductPrice($product, $store);
+      $price = $helper->hasSpecialPrice($product, $store)
+                 ? $product->getSpecialPrice()
+                   : $product->getPrice();
 
       //if ($shippingType != MVentory_TradeMe_Model_Config::SHIPPING_FREE) {
 
@@ -355,7 +357,7 @@ class MVentory_TradeMe_Model_Api {
       //}
 
       //Apply fees to price of the product if it's allowed
-      $price = isset($_data['add_fees']) && $_data['add_fees']
+      $price = $this->_getAddFees($product, $_data)
                   ? $helper->addFees($price)
                     : $price;
 
@@ -670,11 +672,13 @@ class MVentory_TradeMe_Model_Api {
 
       //set price
       if (!isset($parameters['StartPrice'])) {
+        $store = $this->_website->getDefaultStore();
 
-        $price = $helper->getProductPrice(
-          $product,
-          $this->_website->getDefaultStore()
-        );
+        $price = $helper->hasSpecialPrice($product, $store)
+                   ? $product->getSpecialPrice()
+                     : $product->getPrice();
+
+        unset($store);
 
         //if ($shippingType != MVentory_TradeMe_Model_Config::SHIPPING_FREE) {
 
@@ -695,7 +699,7 @@ class MVentory_TradeMe_Model_Api {
         //}
 
         //Apply fees to price of the product if it's allowed
-        $price = isset($formData['add_fees']) && $formData['add_fees']
+        $price = $this->_getAddFees($product, $formData)
                    ? $helper->addFees($price)
                      : $price;
 
@@ -1184,6 +1188,29 @@ class MVentory_TradeMe_Model_Api {
                   $this->_getConfig(MVentory_TradeMe_Model_Config::LIST_AS_NEW)
                 )
               );
+  }
+
+  /**
+   * Check if fees can be applied to the product
+   *
+   * @param Mage_Catalog_Model_Product $product
+   * @param array $data Account data
+   * @return bool
+   */
+  protected function _getAddFees ($product, $data) {
+    if (!isset($data['add_fees']))
+      return false;
+
+    if ($data['add_fees'] == MVentory_TradeMe_Model_Config::FEES_ALWAYS)
+      return true;
+
+    if ($data['add_fees'] == MVentory_TradeMe_Model_Config::FEES_SPECIAL)
+      return Mage::helper('trademe')->hasSpecialPrice(
+        $product,
+        $this->_website->getDefaultStore()
+      );
+
+    return false;
   }
 
   //!!!TODO: remove method

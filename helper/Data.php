@@ -111,26 +111,24 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
   }
 
   /**
-   * Return price or special price for the product
+   * Check if product has current special price
    *
    * @param Mage_Catalog_Model_Product $product
    * @param Mage_Core_Model_Store $store Product's store
-   * @return float
+   * @return bool
    */
-  public function getProductPrice ($product, $store) {
+  public function hasSpecialPrice ($product, $store) {
     $special = $product->getSpecialPrice();
 
-    $hasSpecial = $special !== null
-                  && $special !== false
-                  && Mage::app()
-                       ->getLocale()
-                       ->isStoreDateInInterval(
-                           $store,
-                           $product->getSpecialFromDate(),
-                           $product->getSpecialToDate()
-                         );
-
-    return $hasSpecial ? $special : $product->getPrice();
+    return $special !== null
+           && $special !== false
+           && Mage::app()
+                ->getLocale()
+                ->isStoreDateInInterval(
+                    $store,
+                    $product->getSpecialFromDate(),
+                    $product->getSpecialToDate()
+                  );
   }
 
   /**
@@ -792,6 +790,15 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
       return false;
     }
 
+    $addFees = $this->_parseAddfeesValue($row[6]);
+
+    if ($addFees === false) {
+      $msg = 'Invalid Add fees value ("%s") in row %s.';
+      $params['errors'][] = $this->__($msg, $row[6], $rowNumber);
+
+      return false;
+    }
+
     //Validate listing duration value
     $listingDuaration = (int) $row[10];
 
@@ -821,7 +828,7 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
       'free_shipping_cost' => $freeShippingCost,
       'allow_buy_now' => (bool) $row[4],
       'avoid_withdrawal' => (bool) $row[5],
-      'add_fees' => (bool) $row[6],
+      'add_fees' => $addFees,
       'allow_pickup' => (bool) $row[7],
       'category_image' => (bool) $row[8],
       'buyer' => (int) $row[9],
@@ -848,6 +855,32 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
       return false;
 
     return $value;
+  }
+
+  protected function  _parseAddfeesValue ($value) {
+    if (!$value = trim($value))
+      return MVentory_TradeMe_Model_Config::FEES_NO;
+
+    if (strlen($value) == 1) {
+      $value = (int) $value;
+
+      $values = Mage::getModel('trademe/attribute_source_addfees')
+        ->toOptionArray();
+
+      return isset($values[$value])
+               ? $value
+                 : MVentory_TradeMe_Model_Config::FEES_NO;
+    }
+
+    $value = strtolower($value);
+
+    if (stripos($value, 'always') !== false)
+      return MVentory_TradeMe_Model_Config::FEES_ALWAYS;
+
+    if (stripos($value, 'special') !== false)
+      return MVentory_TradeMe_Model_Config::FEES_SPECIAL;
+
+    return MVentory_TradeMe_Model_Config::FEES_NO;
   }
 
   /**

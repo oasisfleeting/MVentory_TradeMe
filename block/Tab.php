@@ -38,16 +38,27 @@ class MVentory_TradeMe_Block_Tab
   private $_accounts = null;
   private $_accountId = null;
 
-  //Cache some values
-  private $_productPrice = null;
+  private $_hasSpecialPrice;
+  private $_productPrice;
 
   public function __construct() {
     parent::__construct();
+
+    $trademe = Mage::helper('trademe');
 
     $product = $this->getProduct();
 
     $this->_helper = Mage::helper('mventory/product');
     $this->_website = $this->_helper->getWebsite($product);
+
+    $this->_hasSpecialPrice = $trademe->hasSpecialPrice(
+      $product,
+      $this->_website->getDefaultStore()
+    );
+
+    $this->_productPrice = $this->_hasSpecialPrice
+                             ? $product->getSpecialPrice()
+                               : $product->getPrice();
 
     $productId = $product->getId();
 
@@ -56,8 +67,6 @@ class MVentory_TradeMe_Block_Tab
 
     $this->_session = $session->getData('trademe_data');
     $session->unsetData('trademe_data');
-
-    $trademe = Mage::helper('trademe');
 
     $this->_accountId = isset($this->_session['account_id'])
                           ? $this->_session['account_id']
@@ -132,14 +141,6 @@ class MVentory_TradeMe_Block_Tab
    * @return float
    */
   public function getProductPrice () {
-    if ($this->_productPrice !== null)
-      return $this->_productPrice;
-
-    $this->_productPrice = Mage::helper('trademe')->getProductPrice(
-      $this->getProduct(),
-      $this->_website->getDefaultStore()
-    );
-
     return $this->_productPrice;
   }
 
@@ -378,7 +379,11 @@ class MVentory_TradeMe_Block_Tab
     if ($addFees == -1)
       $addFees = $account['add_fees'];
 
-    if (!$addFees)
+    if ($addFees == MVentory_TradeMe_Model_Config::FEES_NO)
+      return 0;
+
+    if ($addFees == MVentory_TradeMe_Model_Config::FEES_SPECIAL
+        && !$this->_hasSpecialPrice)
       return 0;
 
     //$shippingType = $this->getShippingType();
@@ -398,7 +403,8 @@ class MVentory_TradeMe_Block_Tab
 
     $data = array(
       'product' => array(
-        'price' => $this->getProductPrice()
+        'price' => $this->_productPrice,
+        'has_special_price' => $this->_hasSpecialPrice
       ),
       'accounts' => $this->_accounts
     );
@@ -458,8 +464,6 @@ class MVentory_TradeMe_Block_Tab
   protected function _calculateFees () {
     $helper = Mage::helper('trademe');
 
-    $price = $this->getProductPrice();
-
     foreach ($this->_accounts as &$account) {
       if (!isset($account['shipping_type']))
         continue;
@@ -473,10 +477,10 @@ class MVentory_TradeMe_Block_Tab
       //                        : 0;
 
       $account['fees']
-        = $helper->calculateFees($price + $shippingRate);
+        = $helper->calculateFees($this->_productPrice + $shippingRate);
 
       //$account['free_shipping_fees']
-      //  = $helper->calculateFees($price + $freeShippingCost);
+      //  = $helper->calculateFees($this->_productPrice + $freeShippingCost);
     }
   }
 }

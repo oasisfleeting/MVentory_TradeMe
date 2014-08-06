@@ -215,10 +215,10 @@ function categories_for_product (url_templates) {
   categories_table(url_templates, on_add, on_remove);
 }
 
-function update_total_price (price, data) {
+function update_total_price (product, data) {
   var $price_parts = $('#trademe-price');
 
-  var price = parseFloat(price);
+  var price = parseFloat(product['price']);
 
   var shipping_type_value = $('#trademe-tab-shipping-type').val();
 
@@ -238,7 +238,9 @@ function update_total_price (price, data) {
   if (add_fees_value == -1)
     add_fees_value = data['add_fees'];
 
-  var add_fees = add_fees_value == 1 && fees;
+  var add_fees = fees
+                 && (add_fees_value == 1
+                     || (add_fees_value == 2 && product['has_special_price']));
 
   if (!(shipping_rate || add_fees)) {
     $price_parts.hide();

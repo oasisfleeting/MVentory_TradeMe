@@ -47,6 +47,11 @@ class MVentory_TradeMe_Model_Config
   const PICKUP_DEMAND = 2; //Buyer must pickup
   const PICKUP_FORBID = 3; //No pickups
 
+  //Add fees (TradeMe commission) options
+  const FEES_NO = 0;      //No commission
+  const FEES_ALWAYS = 1;  //Always add commission
+  const FEES_SPECIAL = 2; //Only if the product has a current special price
+
   const CACHE_TYPE = 'trademe';
   const CACHE_TAG = 'TRADEME';
 }
