@@ -36,7 +36,8 @@ $_accounts = $this->getAccounts();
 
 $_shippingRate = $this->getShippingRate();
 $_fees = $this->getFees();
-$_totalPrice = $_product->getPrice() + $_shippingRate + $_fees;
+$_price = $this->getProductPrice();
+$_totalPrice = $_price + $_shippingRate + $_fees;
 
 ?>
 
@@ -124,7 +125,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_fees;
 <p>
   Total price: $<span id="trademe-total-price"><?php echo number_format($_totalPrice, 2); ?></span>
   <span id="trademe-price"<?php if (!($_shippingRate || $_fees)) echo ' style="display: none;"'; ?>>
-    ($<?php echo number_format($_product->getPrice(), 2); ?>
+    ($<?php echo number_format($_price, 2); ?>
 
     <span id="trademe-wrapper-shipping-rate"<?php if (!$_shippingRate) echo ' style="display: none;"'; ?>>
       + $<span id="trademe-shippingrate"><?php echo number_format($_shippingRate, 2); ?></span> (shipping)

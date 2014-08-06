@@ -262,6 +262,8 @@ class MVentory_TradeMe_Model_Api {
                .  MVentory_TradeMe_Model_Config::DESCRIPTION_MAX_LENGTH
                . ' characters';
 
+      $store = $this->_website->getDefaultStore();
+
       //Convert all HTML entities to chars first (to allow entities which
       //are not exists in XML) and then convert special chars to entities
       //to not break XML
@@ -275,7 +277,6 @@ class MVentory_TradeMe_Model_Api {
       $image = $product->getImage();
 
       if ($image && $image != 'no_selection') {
-        $store = $this->_website->getDefaultStore();
         $changeStore = $store->getId != Mage::app()->getStore()->getId();
 
         if ($changeStore) {
@@ -298,7 +299,7 @@ class MVentory_TradeMe_Model_Api {
         if ($changeStore)
           $emu->stopEnvironmentEmulation($origEnv);
 
-        unset($store, $changeStore, $emu, $origEnv);
+        unset($changeStore, $emu, $origEnv);
 
         if (!file_exists($image))
           return 'Image doesn\'t exists';
@@ -333,7 +334,7 @@ class MVentory_TradeMe_Model_Api {
       //    $title = $freeShippingTitle;
       //}
 
-      $price = $product->getPrice();
+      $price = $helper->getProductPrice($product, $store);
 
       //if ($shippingType != MVentory_TradeMe_Model_Config::SHIPPING_FREE) {
 
@@ -670,7 +671,10 @@ class MVentory_TradeMe_Model_Api {
       //set price
       if (!isset($parameters['StartPrice'])) {
 
-        $price = $product->getPrice();
+        $price = $helper->getProductPrice(
+          $product,
+          $this->_website->getDefaultStore()
+        );
 
         //if ($shippingType != MVentory_TradeMe_Model_Config::SHIPPING_FREE) {
 

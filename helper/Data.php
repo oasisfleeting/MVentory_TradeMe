@@ -111,6 +111,29 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
   }
 
   /**
+   * Return price or special price for the product
+   *
+   * @param Mage_Catalog_Model_Product $product
+   * @param Mage_Core_Model_Store $store Product's store
+   * @return float
+   */
+  public function getProductPrice ($product, $store) {
+    $special = $product->getSpecialPrice();
+
+    $hasSpecial = $special !== null
+                  && $special !== false
+                  && Mage::app()
+                       ->getLocale()
+                       ->isStoreDateInInterval(
+                           $store,
+                           $product->getSpecialFromDate(),
+                           $product->getSpecialToDate()
+                         );
+
+    return $hasSpecial ? $special : $product->getPrice();
+  }
+
+  /**
    * Calculate TradeMe fees for the product
    *
    * @param float $price

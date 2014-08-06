@@ -38,6 +38,9 @@ class MVentory_TradeMe_Block_Tab
   private $_accounts = null;
   private $_accountId = null;
 
+  //Cache some values
+  private $_productPrice = null;
+
   public function __construct() {
     parent::__construct();
 
@@ -121,6 +124,23 @@ class MVentory_TradeMe_Block_Tab
 
   public function getProduct () {
     return Mage::registry('current_product');
+  }
+
+  /**
+   * Return price or special price for current product
+   *
+   * @return float
+   */
+  public function getProductPrice () {
+    if ($this->_productPrice !== null)
+      return $this->_productPrice;
+
+    $this->_productPrice = Mage::helper('trademe')->getProductPrice(
+      $this->getProduct(),
+      $this->_website->getDefaultStore()
+    );
+
+    return $this->_productPrice;
   }
 
   public function getCategories () {
@@ -378,7 +398,7 @@ class MVentory_TradeMe_Block_Tab
 
     $data = array(
       'product' => array(
-        'price' => $product->getPrice()
+        'price' => $this->getProductPrice()
       ),
       'accounts' => $this->_accounts
     );
@@ -438,9 +458,7 @@ class MVentory_TradeMe_Block_Tab
   protected function _calculateFees () {
     $helper = Mage::helper('trademe');
 
-    $price = $this
-               ->getProduct()
-               ->getPrice();
+    $price = $this->getProductPrice();
 
     foreach ($this->_accounts as &$account) {
       if (!isset($account['shipping_type']))
