@@ -94,7 +94,8 @@ class MVentory_TradeMe_Block_Options
       ),
       'shipping_options' => array(
         'label' => 'Shipping options',
-        'type' => self::TYPE_TEXT
+        'type' => self::TYPE_TEXT,
+        'prepare' => '_exportShippingOptions'
       ),
       'footer' => array(
         'label' => 'Footer description',
@@ -128,11 +129,6 @@ class MVentory_TradeMe_Block_Options
                              : $this->_fillShippingTypes($_shippingTypes);
 
         foreach ($shippingTypes as $id => $options) {
-          if (isset($options['shipping_options'])
-              && is_array($options['shipping_options']))
-            $options['shipping_options']
-              = $this->_exportShippingOptions($options['shipping_options']);
-
           $options['allow_buy_now'] = (int) $options['allow_buy_now'];
 
           $row = $options + array(
@@ -140,16 +136,29 @@ class MVentory_TradeMe_Block_Options
             'shipping_type' => $_shippingTypes[$id]
           );
 
-          foreach ($row as $optionId => $optionValue)
-            if (isset($this->_options[$optionId]))
-              switch ($this->_options[$optionId]['type']) {
-                case self::TYPE_INT:
-                case self::TYPE_BOOL:
-                  $row[$optionId] = (int) $row[$optionId];
-                  break;
-                case self::TYPE_PRICE:
-                  $row[$optionId] = number_format((float) $row[$optionId], 2);
-              }
+          foreach ($row as $optionId => $optionValue) {
+            if (!isset($this->_options[$optionId]))
+              continue;
+
+            $option = $this->_options[$optionId];
+
+            if (isset($option['prepare']))
+              $optionValue = call_user_func(
+                array($this, $option['prepare']),
+                $optionValue
+              );
+
+            switch ($option['type']) {
+              case self::TYPE_INT:
+              case self::TYPE_BOOL:
+                $optionValue = (int) $optionValue;
+                break;
+              case self::TYPE_PRICE:
+                $optionValue = number_format((float) $optionValue, 2);
+            }
+
+            $row[$optionId] = $optionValue;
+          }
 
           $collection->addItem(new Varien_Object($row));
         }
@@ -217,6 +226,9 @@ class MVentory_TradeMe_Block_Options
    * @return string
    */
   protected function _exportShippingOptions ($options) {
+    if (!is_array($options))
+      return $options;
+
     $_options = '';
 
     foreach ($options as $option)
